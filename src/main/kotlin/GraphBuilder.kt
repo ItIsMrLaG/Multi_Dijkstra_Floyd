@@ -1,5 +1,7 @@
 package org.example
 
+import com.google.common.collect.ImmutableList
+import com.google.common.collect.ImmutableSet
 import java.io.File
 
 object GraphBuilder {
@@ -19,9 +21,12 @@ object GraphBuilder {
 
     data class Vertex<T>(val id: Int, val data: T) {
 
-        val edges = mutableSetOf<Edge<T>>()
+        private val _edges = mutableSetOf<Edge<T>>()
 
-        private fun add(v: Vertex<T>, w: Int) = edges.add(Edge(v, w))
+        val edges: HashSet<Edge<T>>
+            get() = _edges.toHashSet()
+
+        private fun add(v: Vertex<T>, w: Int) = _edges.add(Edge(v, w))
 
         fun connectTo(v: Vertex<T>, w: Int) {
             add(v, w)
@@ -30,7 +35,7 @@ object GraphBuilder {
 
         override fun toString(): String {
             var s = "id: $id\nvalue: $data\n"
-            edges.forEach { s += "(${it.to.id} [${it.weight}]) | " }
+            _edges.forEach { s += "(${it.to.id} [${it.weight}]) | " }
             s += "\n"
             return s
         }
