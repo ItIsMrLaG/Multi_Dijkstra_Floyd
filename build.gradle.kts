@@ -12,7 +12,7 @@ repositories {
 
 dependencies {
     testImplementation(kotlin("test"))
-    testImplementation("org.jetbrains.kotlinx:lincheck:2.26")
+    testImplementation("org.jetbrains.kotlinx:lincheck:2.30")
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.junit.jupiter:junit-jupiter-params:5.10.0")
     implementation("org.jetbrains.kotlinx:atomicfu:0.23.2")

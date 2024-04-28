@@ -1,7 +1,5 @@
 package org.example
 
-import com.google.common.collect.ImmutableList
-import com.google.common.collect.ImmutableSet
 import java.io.File
 
 object GraphBuilder {
@@ -80,37 +78,55 @@ object GraphBuilder {
         return createGraph(nodes, (0..<n).toList())
     }
 
-    fun generateGraph(n: Int, maxEdgeN: Int, maxW: Int, minW: Int = 0): Graph<Int> {
-        if (maxEdgeN - (n - 1) < 0) throw RuntimeException("maxEdgeN should be greater then (n-1)")
-        if (n <= 0) throw RuntimeException("n should be greater then 0")
-
-        val info = mutableListOf<String>()
-        val unlinked = (1..<n).toMutableSet()
-        val linked = mutableSetOf(0)
+    private fun generateComponent(
+        acc: MutableList<String>,
+        from: Int,
+        to: Int,
+        maxEdgeN: Int,
+        maxW: Int,
+        minW: Int,
+    ) {
+        val unlinked = ((from + 1)..to).toMutableSet()
+        val linked = mutableSetOf<Int>(from)
 
         // Create random spanning tree
-        (1..<n).forEach { _ ->
+        (from..<to).forEach { _ ->
             val prev = linked.random()
             val new = unlinked.random()
-            info.add("$prev $new ${(minW..maxW).random()}")
+            acc.add("$prev $new ${(minW..maxW).random()}")
             linked.add(new)
             unlinked.remove(new)
         }
 
         // Add random edges
-        (0..<(maxEdgeN - (n - 1))).forEach { _ ->
-            val range = 0..<n
+        (0..<(maxEdgeN - (to - from))).forEach { _ ->
+            val range = from..to
             val firstV = range.random()
             val secondV = range.random().let {
                 if (it == firstV) {
-                    (firstV + 1) % (n - 1)
+                    (firstV + 1) % (to - from)
                 } else it
             }
-            info.add("$firstV $secondV ${(minW..maxW).random()}")
+            acc.add("$firstV $secondV ${(minW..maxW).random()}")
         }
+    }
+
+    fun generateGraph(componentN: Int, vertexN: Int, maxEdgeN: Int, maxW: Int, minW: Int = 0): Graph<Int> {
+        if (maxEdgeN - (vertexN - 1) < 0) throw RuntimeException("maxEdgeN should be greater then (n-1)")
+        if (vertexN <= 0) throw RuntimeException("n should be greater then 0")
+        if (vertexN / componentN < 1) throw RuntimeException("vertexN >= components")
+
+        val vPerComp = vertexN / componentN
+
+        val info = mutableListOf<String>()
+
+        (1..<componentN).forEach{ i ->
+            generateComponent(info, (i - 1)*vPerComp, i*vPerComp, maxEdgeN/componentN, maxW, minW)
+        }
+        generateComponent(info, (componentN - 1)*vPerComp, vertexN - 1, maxEdgeN/componentN, maxW, minW)
 
         val nodes = parseNodes(info)
-        return createGraph(nodes, (0..<n).toList())
+        return createGraph(nodes, (0..<vertexN).toList())
     }
 
     fun <T> saveToFile(graph: Graph<T>, path: String) {
