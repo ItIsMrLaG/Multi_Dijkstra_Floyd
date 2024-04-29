@@ -1,10 +1,11 @@
 package org.example.Seq
 
+import org.example.DistanceFinder
 import org.example.GraphBuilder
 import java.util.*
 import kotlin.math.min
 
-class SequentialDijkstra {
+class SequentialDijkstra : DistanceFinder {
 
     private val graph: GraphBuilder.Graph<Int>
 
@@ -31,7 +32,7 @@ class SequentialDijkstra {
         presenters = graph.mapIndexed { i, _ -> SeqPresenter(i, Long.MAX_VALUE) }
     }
 
-    fun getMinDistance(startId: Int, destId: Int): Long {
+    override fun getMinDistance(startId: Int, destId: Int): Long {
 
         presenters[startId].weight = 0
         presenters[startId].mark = Marker.Processed

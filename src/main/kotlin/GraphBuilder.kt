@@ -54,6 +54,19 @@ object GraphBuilder {
             vertex.forEach { s += it.toString() }
             return s
         }
+
+        fun getMatrix(): Array<Array<Long>> {
+            val matrix = Array(n) { Array(n) { Long.MAX_VALUE } }
+            vertex.forEach { v ->
+                v.edges.forEach { eg ->
+                    matrix[v.id][eg.to.id] = eg.weight.toLong()
+                }
+            }
+            (0..<n).forEach { i ->
+                matrix[i][i] = 0
+            }
+            return matrix
+        }
     }
 
     private fun <T> createGraph(info: List<Node>, vls: List<T>): Graph<T> {
@@ -120,10 +133,10 @@ object GraphBuilder {
 
         val info = mutableListOf<String>()
 
-        (1..<componentN).forEach{ i ->
-            generateComponent(info, (i - 1)*vPerComp, i*vPerComp, maxEdgeN/componentN, maxW, minW)
+        (1..<componentN).forEach { i ->
+            generateComponent(info, (i - 1) * vPerComp, i * vPerComp, maxEdgeN / componentN, maxW, minW)
         }
-        generateComponent(info, (componentN - 1)*vPerComp, vertexN - 1, maxEdgeN/componentN, maxW, minW)
+        generateComponent(info, (componentN - 1) * vPerComp, vertexN - 1, maxEdgeN / componentN, maxW, minW)
 
         val nodes = parseNodes(info)
         return createGraph(nodes, (0..<vertexN).toList())

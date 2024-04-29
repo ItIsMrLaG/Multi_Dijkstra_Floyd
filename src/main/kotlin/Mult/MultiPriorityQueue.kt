@@ -45,7 +45,6 @@ class MultiPriorityQueue(private val n: Int) {
         if (v1 == null) return v2
         if (v2 == null) return v1
         if (MultiPresenter.PComparator.compare(v1, v2) < 0) {
-            //TODO: Потенциальная ошибка (знак мог не в ту сторону поставить)
             q2.addElement(v2)
             return v1
         } else {

@@ -3,12 +3,13 @@ package org.example.Mult
 import kotlinx.atomicfu.AtomicRef
 import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.*
+import org.example.DistanceFinder
 import org.example.GraphBuilder
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.atomic.AtomicLong
 
-class MultiDijkstra {
+class MultiDijkstra : DistanceFinder {
 
     /*  Context Fields    */
     private val graph: GraphBuilder.Graph<Int>
@@ -73,7 +74,7 @@ class MultiDijkstra {
     }
 
     @OptIn(ExperimentalCoroutinesApi::class, DelicateCoroutinesApi::class)
-    fun getMinDistance(startId: Int, destId: Int) = runBlocking {
+    override fun getMinDistance(startId: Int, destId: Int) = runBlocking {
         val jobs = mutableListOf<Deferred<Long>>()
         coroutineScope { // scope for coroutines
             repeat(queue.getN()) { it ->
