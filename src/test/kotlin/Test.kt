@@ -45,7 +45,7 @@ internal class ParallelismTests {
         "./src/test/resources/samples/test5_0_6.test,5,0,6",
         "./src/test/resources/samples/test17_0_4.test,17,0,4"
     )
-    fun `checking the correctness of the sequential multi-version 1 thread + 4 queues`(
+    fun `checking the correctness of the multi-Dijkstra`(
         path: String,
         expected: Long,
         from: Int,
@@ -61,14 +61,14 @@ internal class ParallelismTests {
         "./src/test/resources/samples/test5_0_6.test,5,0,6",
         "./src/test/resources/samples/test17_0_4.test,17,0,4"
     )
-    fun `checking the correctness of the sequential multi-version 1 thread + 4 queues Floyd`(
+    fun `checking the correctness of the multi-Floyd`(
         path: String,
         expected: Long,
         from: Int,
         to: Int,
     ) {
         val g = GraphBuilder.readGraph(path)
-        val result = MultiFloyd(2, g).getMinDistance(from, to)
+        val result = MultiFloyd(4, g).getMinDistance(from, to)
         assertEquals(expected, result)
     }
 
@@ -95,4 +95,5 @@ internal class ParallelismTests {
 
         assertEquals(r1, r2)
     }
+
 }
